@@ -14,7 +14,7 @@ class PushNotification:
     def __init__(self):
         self.pushplus_url = "https://www.pushplus.plus/send"
         self.telegram_url = "https://api.telegram.org/bot{}/sendMessage"
-        self.bark_url = "https://api.day.app/"  # Bark推送API
+        self.bark_url = "https://api.day.app/{}/{}/{}"  # Bark推送API
         self.headers = {'Content-Type': 'application/json'}
         # 从环境变量获取代理设置
         self.proxies = {
@@ -92,20 +92,11 @@ class PushNotification:
     def push_bark(self, content, device_token):
         """Bark消息推送"""
         attempts = 5
+        bark_title = "微信阅读-Github"
+        url = self.bark_url.format(device_token,bark_title,content)
         for attempt in range(attempts):
             try:
-                payload = {
-                    "device_key": device_token,
-                    "title": "微信阅读推送",
-                    "body": content,
-                    "group": "微信阅读"
-                }
-                response = requests.post(
-                    self.bark_url,
-                    json=payload,
-                    headers=self.headers,
-                    timeout=10
-                )
+                response = requests.get(url, timeout=10)
                 response.raise_for_status()
                 logger.info("✅ Bark响应: %s", response.text)
                 return True

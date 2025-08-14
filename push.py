@@ -25,16 +25,70 @@ class PushNotification:
 
     def push_pushplus(self, content, token):
         """PushPlus消息推送"""
-        # 原有实现保持不变...
-        
+        attempts = 5
+        for attempt in range(attempts):
+            try:
+                response = requests.post(
+                    self.pushplus_url,
+                    data=json.dumps({
+                        "token": token,
+                        "title": "微信阅读推送...",
+                        "content": content
+                    }).encode('utf-8'),
+                    headers=self.headers,
+                    timeout=10
+                )
+                response.raise_for_status()
+                logger.info("✅ PushPlus响应: %s", response.text)
+                break  # 成功推送，跳出循环
+            except requests.exceptions.RequestException as e:
+                logger.error("❌ PushPlus推送失败: %s", e)
+                if attempt < attempts - 1:  # 如果不是最后一次尝试
+                    sleep_time = random.randint(180, 360)  # 随机3到6分钟
+                    logger.info("将在 %d 秒后重试...", sleep_time)
+                    time.sleep(sleep_time)
+
     def push_telegram(self, content, bot_token, chat_id):
         """Telegram消息推送，失败时自动尝试直连"""
-        # 原有实现保持不变...
+        url = self.telegram_url.format(bot_token)
+        payload = {"chat_id": chat_id, "text": content}
 
+        try:
+            # 先尝试代理
+            response = requests.post(url, json=payload, proxies=self.proxies, timeout=30)
+            logger.info("✅ Telegram响应: %s", response.text)
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            logger.error("❌ Telegram代理发送失败: %s", e)
+            try:
+                # 代理失败后直连
+                response = requests.post(url, json=payload, timeout=30)
+                response.raise_for_status()
+                return True
+            except Exception as e:
+                logger.error("❌ Telegram发送失败: %s", e)
+                return False
+    
     def push_wxpusher(self, content, spt):
         """WxPusher消息推送（极简方式）"""
-        # 原有实现保持不变...
+        attempts = 5
+        url = self.wxpusher_simple_url.format(spt, content)
+        
+        for attempt in range(attempts):
+            try:
+                response = requests.get(url, timeout=10)
+                response.raise_for_status()
+                logger.info("✅ WxPusher响应: %s", response.text)
+                break
+            except requests.exceptions.RequestException as e:
+                logger.error("❌ WxPusher推送失败: %s", e)
+                if attempt < attempts - 1:
+                    sleep_time = random.randint(180, 360)
+                    logger.info("将在 %d 秒后重试...", sleep_time)
+                    time.sleep(sleep_time)
 
+    # 增加bark推送
     def push_bark(self, content, device_token):
         """Bark消息推送"""
         attempts = 5

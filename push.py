@@ -92,8 +92,8 @@ class PushNotification:
     def push_bark(self, content, device_token):
         """Bark消息推送"""
         attempts = 5
-        bark_title = "微信阅读-Github"
-        url = self.bark_url.format(device_token,bark_title,content)
+        bark_title = "微信阅读推送_Github"
+        url = self.bark_url.format(BARK_DEVICE_TOKEN,bark_title,content)
         for attempt in range(attempts):
             try:
                 response = requests.get(url, timeout=10)

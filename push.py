@@ -5,6 +5,7 @@ import time
 import json
 import requests
 import logging
+import urllib.parse  # 添加URL编码支持
 from config import PUSHPLUS_TOKEN, TELEGRAM_CHAT_ID, TELEGRAM_BOT_TOKEN, WXPUSHER_SPT, BARK_DEVICE_TOKEN
 
 logger = logging.getLogger(__name__)
@@ -93,7 +94,14 @@ class PushNotification:
         """Bark消息推送"""
         attempts = 5
         bark_title = "微信阅读推送_Github"
-        url = self.bark_url.format(device_token,bark_title,content)
+
+        # 对标题和内容进行URL编码
+        encoded_title = urllib.parse.quote(bark_title)
+        encoded_content = urllib.parse.quote(content)
+        
+        # 构造正确的Bark URL格式
+        url = f"{self.bark_base_url}/{device_token}/{encoded_title}/{encoded_content}"
+        
         for attempt in range(attempts):
             try:
                 response = requests.get(url, timeout=10)

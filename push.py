@@ -100,7 +100,7 @@ class PushNotification:
         encoded_content = urllib.parse.quote(content)
         
         # 构造正确的Bark URL格式
-        url = f"{self.bark_base_url}/{device_token}/{encoded_title}/{encoded_content}"
+        url = f"{self.bark_url}/{device_token}/{encoded_title}/{encoded_content}"
         
         for attempt in range(attempts):
             try:

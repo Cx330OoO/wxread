@@ -15,7 +15,7 @@ class PushNotification:
     def __init__(self):
         self.pushplus_url = "https://www.pushplus.plus/send"
         self.telegram_url = "https://api.telegram.org/bot{}/sendMessage"
-        self.bark_url = "https://api.day.app/{}/{}/{}"  # Bark推送API
+        self.bark_url = "https://api.day.app"  # Bark推送API
         self.headers = {'Content-Type': 'application/json'}
         # 从环境变量获取代理设置
         self.proxies = {
@@ -96,8 +96,8 @@ class PushNotification:
         bark_title = "微信阅读推送_Github"
 
         # 对标题和内容进行URL编码
-        encoded_title = urllib.parse.quote(bark_title)
-        encoded_content = urllib.parse.quote(content)
+        # encoded_title = urllib.parse.quote(bark_title)
+        # encoded_content = urllib.parse.quote(content)
         
         # 构造正确的Bark URL格式
         url = f"{self.bark_url}/{device_token}/{encoded_title}/{encoded_content}"

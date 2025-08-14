@@ -94,7 +94,7 @@ class PushNotification:
         """Bark消息推送"""
         attempts = 5
         bark_title = "微信阅读推送_Github"
-        device_token =urllib.parse.quote(YQ6jyHwvPYmUQUUZdRddWH)
+        device_token = "YQ6jyHwvPYmUQUUZdRddWH"
 
         # 对标题和内容进行URL编码
         encoded_title = urllib.parse.quote(bark_title)

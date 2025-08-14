@@ -18,6 +18,10 @@ TELEGRAM_BOT_TOKEN = "" or os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = "" or os.getenv("TELEGRAM_CHAT_ID")
 # wxpusher推送时需填
 WXPUSHER_SPT = "" or os.getenv("WXPUSHER_SPT")
+
+# Bark推送的设备令牌（从Bark App获取）
+BARK_DEVICE_TOKEN = "" or os.getenv("BARKPUSH_TOKEN")
+
 # read接口的bash命令，本地部署时可对应替换headers、cookies
 curl_str = os.getenv('WXREAD_CURL_BASH')
 

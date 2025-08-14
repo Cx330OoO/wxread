@@ -14,7 +14,7 @@ class PushNotification:
     def __init__(self):
         self.pushplus_url = "https://www.pushplus.plus/send"
         self.telegram_url = "https://api.telegram.org/bot{}/sendMessage"
-        self.bark_url = "https://api.day.app/push"  # Bark推送API
+        self.bark_url = "https://api.day.app/"  # Bark推送API
         self.headers = {'Content-Type': 'application/json'}
         # 从环境变量获取代理设置
         self.proxies = {

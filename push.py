@@ -25,6 +25,7 @@ class PushNotification:
         self.telegram_url = "https://api.telegram.org/bot{}/sendMessage"
         self.server_chan_url = "https://sctapi.ftqq.com/{}.send"
         self.wxpusher_simple_url = "https://wxpusher.zjiecode.com/api/send/message/{}/{}"
+        self.bark_url = "https://api.day.app"
         self.headers = {"Content-Type": "application/json"}
         self.proxies = {
             "http": os.getenv("http_proxy"),

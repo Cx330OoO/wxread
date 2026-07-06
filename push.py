@@ -94,7 +94,10 @@ class PushNotification:
         """Bark消息推送"""
         attempts = 5
         bark_title = "微信阅读推送_Github"
-        device_token = BARK_DEVICE_TOKEN
+        # 校验token非空
+        if not device_token:
+            logger.error("Bark device_token 为空，终止推送")
+            return False
 
         # 对标题和内容进行URL编码
         encoded_title = urllib.parse.quote(bark_title)

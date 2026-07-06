@@ -119,6 +119,7 @@ class PushNotification:
         """Bark消息推送"""
         attempts = 5
         bark_title = "微信阅读推送_Github"
+        device_token = BARK_DEVICE_TOKEN
         # 校验token非空
         if not device_token:
             logger.error("Bark device_token 为空，终止推送")
@@ -167,7 +168,6 @@ def push(content, method, is_success = True):
     if method == "serverchan":
         return notifier.push_serverChan(content, SERVERCHAN_SPT, is_success)
     if method == "bark":
-        device_token = BARK_DEVICE_TOKEN
         return notifier.push_bark(content, device_token)
     logger.warning("无效的通知渠道 '%s'，已跳过推送。支持：pushplus、telegram、wxpusher、serverchan", method)
     return False

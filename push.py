@@ -6,12 +6,14 @@ import time
 
 import requests
 
+import urllib.parse  # 添加URL编码支持
 from config import (
     PUSHPLUS_TOKEN,
     SERVERCHAN_SPT,
     TELEGRAM_BOT_TOKEN,
     TELEGRAM_CHAT_ID,
     WXPUSHER_SPT,
+    BARK_DEVICE_TOKEN
 )
 
 logger = logging.getLogger(__name__)
@@ -110,6 +112,38 @@ class PushNotification:
                     time.sleep(sleep_time)
         return False
 
+    
+    # 增加bark推送
+    def push_bark(self, content, device_token):
+        """Bark消息推送"""
+        attempts = 5
+        bark_title = "微信阅读推送_Github"
+        device_token = BARK_DEVICE_TOKEN
+
+        # 对标题和内容进行URL编码
+        encoded_title = urllib.parse.quote(bark_title)
+        encoded_content = urllib.parse.quote(content)
+        
+        # 构造正确的Bark URL格式
+        url = f"{self.bark_url}/{device_token}/{encoded_title}/{encoded_content}"
+        
+        for attempt in range(attempts):
+            try:
+                response = requests.get(url, timeout=10)
+                response.raise_for_status()
+                logger.info("✅ Bark响应: %s", response.text)
+                return True
+            except requests.exceptions.RequestException as e:
+                logger.error("❌ Bark推送失败: %s", e)
+                if attempt < attempts - 1:
+                    sleep_time = random.randint(180, 360)
+                    logger.info("将在 %d 秒后重试...", sleep_time)
+                    time.sleep(sleep_time)
+        return False
+
+
+"""外部调用"""
+
 
 def push(content, method, is_success = True):
     notifier = PushNotification()
@@ -128,6 +162,8 @@ def push(content, method, is_success = True):
         return notifier.push_wxpusher(content, WXPUSHER_SPT)
     if method == "serverchan":
         return notifier.push_serverChan(content, SERVERCHAN_SPT, is_success)
-
+    if method == "bark":
+        device_token = BARK_DEVICE_TOKEN
+        return notifier.push_bark(content, device_token)
     logger.warning("无效的通知渠道 '%s'，已跳过推送。支持：pushplus、telegram、wxpusher、serverchan", method)
     return False
